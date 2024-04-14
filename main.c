@@ -1,6 +1,5 @@
 #include "raylib.h"
 #include <stdbool.h>
-#include <stdio.h>
 
 #define SCALE 40
 #define WINDOW_WIDTH 800
