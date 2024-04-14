@@ -1,5 +1,6 @@
 #include "raylib.h"
 #include <stdbool.h>
+#include <stdlib.h>
 
 #define SCALE 40
 #define WINDOW_WIDTH 800
@@ -11,7 +12,7 @@ typedef struct Cell {
   bool alive;
 } Cell;
 
-int main(void) {
+int main() {
   InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "game-of-life");
   SetTargetFPS(15);
 
@@ -42,15 +43,16 @@ int main(void) {
           int x = i * SCALE;
           int y = j * SCALE;
 
-          if (grid[i][j].alive)
+          if (grid[i][j].alive) {
             DrawRectangle(x, y, SCALE - 1, SCALE - 1, WHITE);
+          }
         }
       }
     } else {
       for (int i = 0; i < COL; i++) {
         for (int j = 0; j < ROW; j++) {
-          int state = grid[i][j].alive;
 
+          int state = grid[i][j].alive;
           int neighbour = 0;
           neighbour += grid[(i - 1 + COL) % COL][(j - 1 + ROW) % ROW].alive;
           neighbour += grid[(i + COL) % COL][(j - 1 + ROW) % ROW].alive;
@@ -66,17 +68,13 @@ int main(void) {
           } else if (state == 1 && (neighbour < 2 || neighbour > 3)) {
             new_grid[i][j].alive = false;
           } else {
-            if (state == 1)
-              new_grid[i][j].alive = true;
-            else
-              new_grid[i][j].alive = false;
+            new_grid[i][j].alive = state;
           }
         }
       }
 
       for (int i = 0; i < COL; i++) {
         for (int j = 0; j < ROW; j++) {
-          grid[i][j].life = new_grid[i][j].life;
           grid[i][j].alive = new_grid[i][j].alive;
         }
       }
@@ -86,14 +84,16 @@ int main(void) {
           int x = i * SCALE;
           int y = j * SCALE;
 
-          if (grid[i][j].alive == true)
+          if (grid[i][j].alive) {
             DrawRectangle(x, y, SCALE - 1, SCALE - 1, WHITE);
+          }
         }
       }
     }
     ClearBackground(BLACK);
     EndDrawing();
   }
+
   CloseWindow();
-  return 0;
+  return EXIT_SUCCESS;
 }
