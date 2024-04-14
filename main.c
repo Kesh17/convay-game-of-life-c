@@ -9,8 +9,6 @@
 
 typedef struct Cell {
   bool alive;
-  int life;
-
 } Cell;
 
 int main(void) {
@@ -21,7 +19,6 @@ int main(void) {
   for (int i = 0; i < COL; i++) {
     for (int j = 0; j < ROW; j++) {
       grid[i][j].alive = false;
-      grid[i][j].life = 0;
     }
   }
 
@@ -39,7 +36,6 @@ int main(void) {
     if (isPaused) {
       if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
         grid[GetMouseX() / SCALE][GetMouseY() / SCALE].alive = true;
-        grid[GetMouseX() / SCALE][GetMouseY() / SCALE].life = 1;
       }
       for (int i = 0; i < COL; i++) {
         for (int j = 0; j < ROW; j++) {
@@ -53,25 +49,23 @@ int main(void) {
     } else {
       for (int i = 0; i < COL; i++) {
         for (int j = 0; j < ROW; j++) {
-          int state = grid[i][j].life;
+          int state = grid[i][j].alive;
 
           int neighbour = 0;
-          neighbour += grid[(i - 1 + COL) % COL][(j - 1 + ROW) % ROW].life;
-          neighbour += grid[(i + COL) % COL][(j - 1 + ROW) % ROW].life;
-          neighbour += grid[(i + 1 + COL) % COL][(j - 1 + ROW) % ROW].life;
-          neighbour += grid[(i + 1 + COL) % COL][(j + ROW) % ROW].life;
-          neighbour += grid[(i + 1 + COL) % COL][(j + 1 + ROW) % ROW].life;
-          neighbour += grid[(i + COL) % COL][(j + 1 + ROW) % ROW].life;
-          neighbour += grid[(i - 1 + COL) % COL][(j + 1 + ROW) % ROW].life;
-          neighbour += grid[(i - 1 + COL) % COL][(j + ROW) % ROW].life;
+          neighbour += grid[(i - 1 + COL) % COL][(j - 1 + ROW) % ROW].alive;
+          neighbour += grid[(i + COL) % COL][(j - 1 + ROW) % ROW].alive;
+          neighbour += grid[(i + 1 + COL) % COL][(j - 1 + ROW) % ROW].alive;
+          neighbour += grid[(i + 1 + COL) % COL][(j + ROW) % ROW].alive;
+          neighbour += grid[(i + 1 + COL) % COL][(j + 1 + ROW) % ROW].alive;
+          neighbour += grid[(i + COL) % COL][(j + 1 + ROW) % ROW].alive;
+          neighbour += grid[(i - 1 + COL) % COL][(j + 1 + ROW) % ROW].alive;
+          neighbour += grid[(i - 1 + COL) % COL][(j + ROW) % ROW].alive;
+
           if (state == 0 && neighbour == 3) {
-            new_grid[i][j].life = 1;
             new_grid[i][j].alive = true;
           } else if (state == 1 && (neighbour < 2 || neighbour > 3)) {
-            new_grid[i][j].life = 0;
             new_grid[i][j].alive = false;
           } else {
-            new_grid[i][j].life = state;
             if (state == 1)
               new_grid[i][j].alive = true;
             else
