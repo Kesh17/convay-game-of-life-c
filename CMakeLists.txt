@@ -7,4 +7,5 @@ set(CMAKE_C_STANDARD 11) # Requires C11 standard
 
 add_executable(main main.c)
 
-target_link_libraries(main raylib)
+target_link_libraries(main raylib m)
+

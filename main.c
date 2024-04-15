@@ -1,6 +1,6 @@
 #include "raylib.h"
 #include <stdbool.h>
-#include <stdio.h>
+#include <stdlib.h>
 
 #define SCALE 40
 #define WINDOW_WIDTH 800
@@ -10,11 +10,9 @@
 
 typedef struct Cell {
   bool alive;
-  int life;
-
 } Cell;
 
-int main(void) {
+int main() {
   InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "game-of-life");
   SetTargetFPS(15);
 
@@ -22,7 +20,6 @@ int main(void) {
   for (int i = 0; i < COL; i++) {
     for (int j = 0; j < ROW; j++) {
       grid[i][j].alive = false;
-      grid[i][j].life = 0;
     }
   }
 
@@ -40,50 +37,44 @@ int main(void) {
     if (isPaused) {
       if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
         grid[GetMouseX() / SCALE][GetMouseY() / SCALE].alive = true;
-        grid[GetMouseX() / SCALE][GetMouseY() / SCALE].life = 1;
       }
       for (int i = 0; i < COL; i++) {
         for (int j = 0; j < ROW; j++) {
           int x = i * SCALE;
           int y = j * SCALE;
 
-          if (grid[i][j].alive)
+          if (grid[i][j].alive) {
             DrawRectangle(x, y, SCALE - 1, SCALE - 1, WHITE);
+          }
         }
       }
     } else {
       for (int i = 0; i < COL; i++) {
         for (int j = 0; j < ROW; j++) {
-          int state = grid[i][j].life;
 
+          int state = grid[i][j].alive;
           int neighbour = 0;
-          neighbour += grid[(i - 1 + COL) % COL][(j - 1 + ROW) % ROW].life;
-          neighbour += grid[(i + COL) % COL][(j - 1 + ROW) % ROW].life;
-          neighbour += grid[(i + 1 + COL) % COL][(j - 1 + ROW) % ROW].life;
-          neighbour += grid[(i + 1 + COL) % COL][(j + ROW) % ROW].life;
-          neighbour += grid[(i + 1 + COL) % COL][(j + 1 + ROW) % ROW].life;
-          neighbour += grid[(i + COL) % COL][(j + 1 + ROW) % ROW].life;
-          neighbour += grid[(i - 1 + COL) % COL][(j + 1 + ROW) % ROW].life;
-          neighbour += grid[(i - 1 + COL) % COL][(j + ROW) % ROW].life;
+          neighbour += grid[(i - 1 + COL) % COL][(j - 1 + ROW) % ROW].alive;
+          neighbour += grid[(i + COL) % COL][(j - 1 + ROW) % ROW].alive;
+          neighbour += grid[(i + 1 + COL) % COL][(j - 1 + ROW) % ROW].alive;
+          neighbour += grid[(i + 1 + COL) % COL][(j + ROW) % ROW].alive;
+          neighbour += grid[(i + 1 + COL) % COL][(j + 1 + ROW) % ROW].alive;
+          neighbour += grid[(i + COL) % COL][(j + 1 + ROW) % ROW].alive;
+          neighbour += grid[(i - 1 + COL) % COL][(j + 1 + ROW) % ROW].alive;
+          neighbour += grid[(i - 1 + COL) % COL][(j + ROW) % ROW].alive;
+
           if (state == 0 && neighbour == 3) {
-            new_grid[i][j].life = 1;
             new_grid[i][j].alive = true;
           } else if (state == 1 && (neighbour < 2 || neighbour > 3)) {
-            new_grid[i][j].life = 0;
             new_grid[i][j].alive = false;
           } else {
-            new_grid[i][j].life = state;
-            if (state == 1)
-              new_grid[i][j].alive = true;
-            else
-              new_grid[i][j].alive = false;
+            new_grid[i][j].alive = state;
           }
         }
       }
 
       for (int i = 0; i < COL; i++) {
         for (int j = 0; j < ROW; j++) {
-          grid[i][j].life = new_grid[i][j].life;
           grid[i][j].alive = new_grid[i][j].alive;
         }
       }
@@ -93,14 +84,16 @@ int main(void) {
           int x = i * SCALE;
           int y = j * SCALE;
 
-          if (grid[i][j].alive == true)
+          if (grid[i][j].alive) {
             DrawRectangle(x, y, SCALE - 1, SCALE - 1, WHITE);
+          }
         }
       }
     }
     ClearBackground(BLACK);
     EndDrawing();
   }
+
   CloseWindow();
-  return 0;
+  return EXIT_SUCCESS;
 }
