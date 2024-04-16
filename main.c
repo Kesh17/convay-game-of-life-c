@@ -1,6 +1,6 @@
-#include "raylib.h"
 #include <stdbool.h>
 #include <stdlib.h>
+#include "raylib.h"
 
 #define SCALE 40
 #define WINDOW_WIDTH 800
@@ -29,14 +29,15 @@ int main() {
     Cell new_grid[COL][ROW];
 
     BeginDrawing();
-
+    ClearBackground(BLACK);
     if (IsKeyPressed(KEY_SPACE)) {
       isPaused = !isPaused;
     }
 
     if (isPaused) {
       if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-        grid[GetMouseX() / SCALE][GetMouseY() / SCALE].alive = true;
+        grid[GetMouseX() / SCALE][GetMouseY() / SCALE].alive =
+            !grid[GetMouseX() / SCALE][GetMouseY() / SCALE].alive;
       }
       for (int i = 0; i < COL; i++) {
         for (int j = 0; j < ROW; j++) {
@@ -51,8 +52,7 @@ int main() {
     } else {
       for (int i = 0; i < COL; i++) {
         for (int j = 0; j < ROW; j++) {
-
-          int state = grid[i][j].alive;
+          bool state = grid[i][j].alive;
           int neighbour = 0;
           neighbour += grid[(i - 1 + COL) % COL][(j - 1 + ROW) % ROW].alive;
           neighbour += grid[(i + COL) % COL][(j - 1 + ROW) % ROW].alive;
@@ -63,9 +63,9 @@ int main() {
           neighbour += grid[(i - 1 + COL) % COL][(j + 1 + ROW) % ROW].alive;
           neighbour += grid[(i - 1 + COL) % COL][(j + ROW) % ROW].alive;
 
-          if (state == 0 && neighbour == 3) {
+          if (!state && neighbour == 3) {
             new_grid[i][j].alive = true;
-          } else if (state == 1 && (neighbour < 2 || neighbour > 3)) {
+          } else if (state && (neighbour < 2 || neighbour > 3)) {
             new_grid[i][j].alive = false;
           } else {
             new_grid[i][j].alive = state;
@@ -90,7 +90,6 @@ int main() {
         }
       }
     }
-    ClearBackground(BLACK);
     EndDrawing();
   }
 
